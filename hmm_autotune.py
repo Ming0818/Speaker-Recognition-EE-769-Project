@@ -42,15 +42,20 @@ def get_final_feature(id):
 	out = np.array(features)
 	return out,lens
 
-def create_model(n_states,id):
-	if ("model" + str(id)) in os.listdir("Models"):
-		return pickle.load(open('Models/model'+str(id) ,'wb'))
-	features , lens = get_final_feature(id)
+def create_model(n_states,my_id):
+	print(my_id)
+	if ("model-" + str(my_id)) in os.listdir("Models"):
+		my_model_file = open('Models/model-'+str(my_id) ,'rb')
+		model =  pickle.load(my_model_file)
+		return model
+
+	features , lens = get_final_feature(my_id)
+	print("Started Training Model ", my_id)
 	model = hmm.GaussianHMM(n_components=N, covariance_type="diag", init_params='mcs', params='mcs', n_iter=10, 
 							tol=1e-7, verbose=True)
 	model.transmat_ = np.ones((N, N), dtype='float') / N
 	model.fit(features,lens)
-	pickle.dump(model,open('Models/model'+str(id) ,'wb'))
+	pickle.dump(model,open('Models/model-'+str(my_id) ,'wb'))
 	return model
 
 np.random.seed(42)
@@ -86,8 +91,8 @@ for i in id_list:
 			for k in range(len(model_list)):
 				score = model_list[k][0].score(mfcc_module("test/"+i+"/"+j)[:200,:])
 				if max_score < score:
-					index = j
-					max_score = k
+					index = k
+					max_score = score
 			print("i is :",i)
 			pred_list.append(model_list[index][1])
 			actual_list.append(int(i))

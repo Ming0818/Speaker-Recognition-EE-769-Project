@@ -1,0 +1,3 @@
+our models are stored under directories named as per the following conventions
+
+dir name : Tr_  'num of states in hmm' _ 'num of speakers in training set' _ 'num of files per speaker' _ 'num of iterations' 

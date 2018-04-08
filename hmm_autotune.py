@@ -12,10 +12,17 @@ warnings.filterwarnings("ignore")
 N = 50
 
 #Num of speaker
-Num_Speakers = 10
+Num_Speakers = 40
 
 #number of utts to take per speaker
-num_file_per_speaker = 10
+num_file_per_speaker = 40
+
+#Number off iterations of HMM
+num_iter_hmm = 10
+
+
+#Number of test audios per user to be tested
+test_limit = 10
 
 
 def mfcc_module(data):
@@ -44,18 +51,19 @@ def get_final_feature(id):
 
 def create_model(n_states,my_id):
 	print(my_id)
-	if ("model-" + str(my_id)) in os.listdir("Models"):
-		my_model_file = open('Models/model-'+str(my_id) ,'rb')
+	dir_name = "Tr_" + str(N) + "_" + str(Num_Speakers) + "_" + str(num_file_per_speaker) + "_"+str(num_iter_hmm)
+	if ("model-" + str(my_id)) in os.listdir("Models/"+ dir_name):
+		my_model_file = open('Models/'+dir_name + '/model-'+str(my_id) ,'rb')
 		model =  pickle.load(my_model_file)
 		return model
 
 	features , lens = get_final_feature(my_id)
 	print("Started Training Model ", my_id)
-	model = hmm.GaussianHMM(n_components=N, covariance_type="diag", init_params='mcs', params='mcs', n_iter=10, 
+	model = hmm.GaussianHMM(n_components=N, covariance_type="diag", init_params='mcs', params='mcs', n_iter=num_iter_hmm, 
 							tol=1e-7, verbose=True)
 	model.transmat_ = np.ones((N, N), dtype='float') / N
 	model.fit(features,lens)
-	pickle.dump(model,open('Models/model-'+str(my_id) ,'wb'))
+	pickle.dump(model,open('Models/'+dir_name+'/model-'+str(my_id) ,'wb'))
 	return model
 
 np.random.seed(42)
@@ -65,6 +73,9 @@ model_list = []
 num = 0
 print("id list :",id_list)
 
+directory_name = "Tr_" + str(N) + "_" + str(Num_Speakers) + "_" + str(num_file_per_speaker) + "_"+str(num_iter_hmm)
+if not directory_name in os.listdir('Models'):
+	os.system('mkdir -p Models/'+directory_name)
 for i in id_list :
 	if num > Num_Speakers:
 		break
@@ -77,7 +88,6 @@ print("speaker :",speaker_list)
 actual_list = []
 pred_list = []
 
-test_limit = 1
 
 for i in id_list:
 	if int(i) in speaker_list:

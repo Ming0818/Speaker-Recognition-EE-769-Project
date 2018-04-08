@@ -1,0 +1,7 @@
+Please install the following libraries in python3:
+
+librosa 
+hmmlearn
+tkinter3
+pickle
+numpy

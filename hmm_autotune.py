@@ -15,11 +15,10 @@ N = 50
 Num_Speakers = 40
 
 #number of utts to take per speaker
-num_file_per_speaker = 40
+num_file_per_speaker = 10
 
 #Number off iterations of HMM
 num_iter_hmm = 10
-
 
 #Number of test audios per user to be tested
 test_limit = 10

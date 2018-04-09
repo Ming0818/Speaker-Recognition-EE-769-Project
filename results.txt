@@ -1,0 +1,6 @@
+Test on full test set:
+
+ModelSet : 50, 40, 10, 10 : 92.67%
+ModelSet : 50, 40, 40, 10 : 98.99%
+ModelSet : 40, 10, 10, 10 : 91.41%  (num_states should be 50)
+ModelSet : 50, 40, 20, 10 : 91.92% 

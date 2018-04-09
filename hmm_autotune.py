@@ -4,6 +4,7 @@ import librosa.display
 from hmmlearn import hmm
 import os
 import warnings
+import time
 import pickle
 
 warnings.filterwarnings("ignore")
@@ -12,7 +13,7 @@ warnings.filterwarnings("ignore")
 N = 50
 
 #Num of speaker
-Num_Speakers = 40
+Num_Speakers =40
 
 #number of utts to take per speaker
 num_file_per_speaker = 10
@@ -58,11 +59,13 @@ def create_model(n_states,my_id):
 
 	features , lens = get_final_feature(my_id)
 	print("Started Training Model ", my_id)
+	start_time = time.time()
 	model = hmm.GaussianHMM(n_components=N, covariance_type="diag", init_params='mcs', params='mcs', n_iter=num_iter_hmm, 
 							tol=1e-7, verbose=True)
 	model.transmat_ = np.ones((N, N), dtype='float') / N
 	model.fit(features,lens)
 	pickle.dump(model,open('Models/'+dir_name+'/model-'+str(my_id) ,'wb'))
+	print("training time for ",my_id," : ", time.time() -start_time)
 	return model
 
 np.random.seed(42)
@@ -95,6 +98,7 @@ for i in id_list:
 			if test_num >= test_limit :
 				break
 			test_num += 1
+			my_start_time = time.time()
 			max_score = -float('inf')
 			index = 0
 			for k in range(len(model_list)):
@@ -102,9 +106,10 @@ for i in id_list:
 				if max_score < score:
 					index = k
 					max_score = score
-			print("i is :",i)
+			# print("i is :",i)
 			pred_list.append(model_list[index][1])
 			actual_list.append(int(i))
+			print("testing time for ",i,j," : ",time.time() - my_start_time)
 
 print("pred list :",pred_list)
 print("actual list :",actual_list)

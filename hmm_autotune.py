@@ -13,17 +13,16 @@ warnings.filterwarnings("ignore")
 N = 50
 
 #Num of speaker
-Num_Speakers =40
+Num_Speakers = 5
 
 #number of utts to take per speaker
-num_file_per_speaker = 10
+num_file_per_speaker = 7
 
 #Number off iterations of HMM
 num_iter_hmm = 10
 
 #Number of test audios per user to be tested
 test_limit = 10
-
 
 def mfcc_module(data):
 	y , sr = librosa.load(data , sr=None)
@@ -90,7 +89,6 @@ print("speaker :",speaker_list)
 actual_list = []
 pred_list = []
 
-
 for i in id_list:
 	if int(i) in speaker_list:
 		test_num =0
@@ -106,7 +104,6 @@ for i in id_list:
 				if max_score < score:
 					index = k
 					max_score = score
-			# print("i is :",i)
 			pred_list.append(model_list[index][1])
 			actual_list.append(int(i))
 			print("testing time for ",i,j," : ",time.time() - my_start_time)
@@ -121,4 +118,3 @@ for i in range(0,len(actual_list)):
 
 print(((count*1.0)/len(actual_list))*100)
 	
-

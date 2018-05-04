@@ -21,6 +21,7 @@ from .views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^makeModel/$', makemodel_view, name='makemodel_view_api'),
-    url(r'^recogSpeaker/$', recogspeaker_view, name='recogspeaker_view_api')
+    url(r'^makeModel/$', makemodel_view_api, name='makemodel_view_api'),
+    url(r'^identifySpeaker/$', identifySpeaker_view_api, name='identifySpeaker_view_api'),
+    url(r'^verifySpeaker/$', verifySpeaker_view_api, name='verifySpeaker_view_api'),
 ]

@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 N = 50
 
 #Num of speaker
-Num_Speakers =40
+Num_Speakers = 40
 
 #number of utts to take per speaker
 num_file_per_speaker = 10
@@ -64,7 +64,15 @@ def create_model(my_id):
 	model.fit(features,lens)
 	pickle.dump(model,open('SpeakerVerServer/HMM-Models/model-'+str(my_id) ,'wb'))
 	print("training time for ",my_id," : ", time.time() -start_time)
+
+	names_scores_list = pickle.load(open('SpeakerVerServer/scores_test.pkl', 'rb'))
+	score_list = [] 
+	for file in os.listdir("SpeakerVerServer/train/" + id):
+		sc = curr_model.score(mfcc_module("SpeakerVerServer/train/" + id + file)[:200,:])
+		score_list.append([sc])
+		names_scores_list[str(my_id)] = score_list
+
+	pickle.dump(names_scores_list, open('SpeakerVerServer/scores_test.pkl', 'wb'))
 	return model
 
 np.random.seed(42)
-

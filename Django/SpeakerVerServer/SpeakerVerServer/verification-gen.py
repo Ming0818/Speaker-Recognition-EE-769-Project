@@ -7,6 +7,9 @@ import warnings
 import time
 import pickle
 
+warnings.filterwarnings("ignore")
+
+
 def mfcc_module(data):
 	y , sr = librosa.load(data , sr=None)
 	mfcc = librosa.feature.mfcc(y=y, sr=sr,n_mfcc=13,hop_length=int(0.010*sr), n_fft=int(0.025*sr))
@@ -62,14 +65,20 @@ for file in os.listdir('HMM-Models/'):
 
 model_list_with_scores = {}
 
-for model in model_list:
+for model in model_name_list:
 
 	score_list = [] 
 
 	curr_model = pickle.load(open('HMM-Models/model-' + model, 'rb'))
-		
-	for test_file in os.listdir( 'OrigData/test/' + model + "/"):
-		sc = curr_model.score(mfcc_module(curr_dir + 'OrigData/test/' + model + "/" + test_file)[:200,:])
-		score_list.append([sc, i.split('-')[1]])
+	
+	if not os.path.exists('OrigData/test/' + model + "/"):
+		continue
 
-	model_list_with_scores[model] = score_list.sort()
+	for test_file in os.listdir('OrigData/test/' + model + "/"):
+		sc = curr_model.score(mfcc_module('OrigData/test/' + model + "/" + test_file)[:200,:])
+		score_list.append([sc])
+
+	score_list.sort(reverse=True)
+	model_list_with_scores[model] = score_list
+
+pickle.dump(model_list_with_scores, open('scores_test.pkl','wb'))

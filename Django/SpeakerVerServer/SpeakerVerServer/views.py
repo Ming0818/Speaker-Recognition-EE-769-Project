@@ -9,8 +9,8 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from .speaker_ident import identify_speaker
 from .create_model import create_model
+from .speaker_ver import verify_speaker
 import os
-# from .speaker_ver import verify_speaker
 
 @csrf_exempt
 def makemodel_view_api(request):
@@ -33,7 +33,7 @@ def makemodel_view_api(request):
 		for i, file in enumerate(request.FILES.keys()):
 			myfile = request.FILES[file]
 			filename = fs.save("train-" + str(index), myfile)	
-			index += 1 
+			index += 1 	
 		
 		create_model(name)
 
@@ -54,10 +54,7 @@ def identifySpeaker_view_api(request):
 	if request.method == "POST":
 		folder='SpeakerVerServer/test/' 
 		fs = FileSystemStorage(location=folder)
-		# print("files",request.FILES['file'])
-		# print("file",myfile)
 		myfile = request.FILES['file']
-		# print('received file:',myfile['file'])
 		filename = fs.save(myfile.name, myfile)
 		name = identify_speaker(folder + filename)	
 		print(name)
@@ -78,26 +75,28 @@ def verifySpeaker_view_api(request):
 	user = request.user
 
 	if request.method == "POST":
-		folder='SpeakerVerServer/test' 
+		
+		folder='SpeakerVerServer/test/' 
 		fs = FileSystemStorage(location=folder)
-		# print("files",request.FILES['file'])
-		# print("file",myfile)
+		name = request.POST['name']
 		myfile = request.FILES['file']
-		# print('received file:',myfile['file'])
 		filename = fs.save(myfile.name, myfile)
-		#test the data
+		percentage, isTrue = verify_speaker(folder + filename, name)	
+		# name = identify_speaker(folder + filename, name)
 
-		os.remove(filename)
+		print(name)
+
+		os.remove(folder + filename)
 
 		data = {
-			'status' : True,
-			'data' : name
+			'status' : isTrue,
+			'data' : name,
+			'metric' : str(percentage),
 		}
 
 		return HttpResponse(json.dumps(data), content_type='application/json')	
 	else:
 		return HttpResponse(1)
-
 
 def find_max_index(dir):
 	max_index = 0

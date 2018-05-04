@@ -7,6 +7,8 @@ import warnings
 import time
 import pickle
 
+warnings.filterwarnings("ignore")
+
 def mfcc_module(data):
 	y , sr = librosa.load(data , sr=None)
 	mfcc = librosa.feature.mfcc(y=y, sr=sr,n_mfcc=13,hop_length=int(0.010*sr), n_fft=int(0.025*sr))
@@ -51,6 +53,8 @@ def identify_speaker(input_file_name):
 		sc = curr_model.score(mfcc_module(input_file_name)[:200,:])
 		score_list.append([sc, i.split('-')[1]])
 		
-	score_list.sort()
+	score_list.sort(reverse=True)
 	
+	print(score_list)	
+
 	return score_list[0][1]

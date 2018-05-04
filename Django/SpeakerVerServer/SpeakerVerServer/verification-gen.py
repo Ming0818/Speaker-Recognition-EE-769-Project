@@ -76,7 +76,7 @@ for model in model_name_list:
 
 	for test_file in os.listdir('OrigData/test/' + model + "/"):
 		sc = curr_model.score(mfcc_module('OrigData/test/' + model + "/" + test_file)[:200,:])
-		score_list.append([sc])
+		score_list.append(sc)
 
 	score_list.sort(reverse=True)
 	model_list_with_scores[model] = score_list

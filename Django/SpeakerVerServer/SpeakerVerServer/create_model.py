@@ -50,10 +50,6 @@ def get_final_feature(id):
 
 def create_model(my_id):
 	print(my_id)	
-	if ("model-" + str(my_id)) in os.listdir("SpeakerVerServer/HMM-Models/"):
-		my_model_file = open('SpeakerVerServer/HMM-Models/model-'+str(my_id) ,'rb')
-		model =  pickle.load(my_model_file)
-		return model
 
 	features , lens = get_final_feature(my_id)
 	print("Started Training Model ", my_id)
@@ -67,9 +63,9 @@ def create_model(my_id):
 
 	names_scores_list = pickle.load(open('SpeakerVerServer/scores_test.pkl', 'rb'))
 	score_list = [] 
-	for file in os.listdir("SpeakerVerServer/train/" + id):
-		sc = curr_model.score(mfcc_module("SpeakerVerServer/train/" + id + file)[:200,:])
-		score_list.append([sc])
+	for file in os.listdir("SpeakerVerServer/train/" + my_id):
+		sc = model.score(mfcc_module("SpeakerVerServer/train/" + my_id + "/"+ file)[:200,:])
+		score_list.append(sc)
 		names_scores_list[str(my_id)] = score_list
 
 	pickle.dump(names_scores_list, open('SpeakerVerServer/scores_test.pkl', 'wb'))

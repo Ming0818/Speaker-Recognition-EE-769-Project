@@ -5,3 +5,6 @@ hmmlearn
 tkinter3
 pickle
 numpy
+
+For the React Native Part:
+

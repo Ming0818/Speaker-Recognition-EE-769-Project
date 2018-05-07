@@ -7,4 +7,3 @@ pickle
 numpy
 
 For the React Native Part:
-
